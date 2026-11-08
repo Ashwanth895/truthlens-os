@@ -1,0 +1,28 @@
+// TruthLens OS — persisted audit reports.
+// SQLite by default; switch `provider` to "postgresql" and DATABASE_URL for Postgres.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Audit {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  title       String
+  sourceType  String // "text" | "url" | "file"
+  sourceUrl   String?
+  wordCount   Int
+  engine      String // "claude" | "heuristic" | "hybrid"
+  durationMs  Int
+  credibility Int
+  biasIndex   Int
+  input       String // cleaned source text
+  result      String // JSON: AuditResult
+  logs        String // JSON: AgentLog[]
+
+  @@index([createdAt])
+}

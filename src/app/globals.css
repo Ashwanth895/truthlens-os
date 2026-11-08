@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-void: #0b0f17;
+  --color-slate: #161f2e;
+  --color-slate-2: #1b2638;
+  --color-line: #2a3b52;
+  --color-line-soft: #1f2d40;
+  --color-cyan: #00f0ff;
+  --color-amber: #ffb800;
+  --color-rose: #ff5c7a;
+  --color-violet: #a78bfa;
+  --color-sky: #7dd3fc;
+  --color-ice: #f0f4f8;
+  --color-silver: #94a3b8;
+  --color-mute: #64748b;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--color-void);
+  color: var(--color-silver);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  overflow: hidden;
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgb(0 240 255 / 0.05), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgb(167 139 250 / 0.05), transparent 60%),
+    var(--color-void);
+}
+
+::selection {
+  background: rgb(0 240 255 / 0.25);
+  color: var(--color-ice);
+}
+
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Calm, thin scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 8px;
+}
+
+.glass {
+  background: rgb(22 31 46 / 0.72);
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+}
+
+.surface {
+  background: var(--color-slate);
+  border: 1px solid var(--color-line);
+}
+
+/* Focus zones: stacked panels, compositor-only transitions (opacity/transform) */
+.zone {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 220ms var(--ease-calm),
+    transform 220ms var(--ease-calm),
+    visibility 0s linear 220ms;
+  will-change: opacity, transform;
+  contain: strict;
+}
+.zone[data-active="true"] {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    opacity 220ms var(--ease-calm),
+    transform 220ms var(--ease-calm),
+    visibility 0s;
+}
+
+/* Collapsible drawers animate grid rows — no height measurement, no layout thrash */
+.drawer-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 240ms var(--ease-calm);
+}
+.drawer-collapse[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.drawer-collapse > div {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.slide-over {
+  transform: translate3d(100%, 0, 0);
+  transition: transform 260ms var(--ease-calm);
+  will-change: transform;
+}
+.slide-over[data-open="true"] {
+  transform: none;
+}
+
+.pulse-dot {
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.8); }
+}
+
+.fade-in {
+  animation: fade-in 320ms var(--ease-calm) both;
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translate3d(0, 4px, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}
+
+@media print {
+  body { overflow: visible; background: white; color: black; }
+}
